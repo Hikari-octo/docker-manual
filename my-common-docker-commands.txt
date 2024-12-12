@@ -1,0 +1,52 @@
+# commands for docker itself
+
+docker version
+docker info
+
+# commands to image management
+
+docker images
+docker images hello-world / docker images ubuntu
+docker build -t zhihangd/my-docker-image:demo1 .
+docker rmi hello-world
+docker tag hello-world:latest zhihangd/my-docker-image:demo1
+
+# commands to registry
+
+docker pull hello-world / docker pull ubuntu
+docker login
+docker push zhihangd/my-docker-image:demo1
+
+# commands to container profiling
+
+docker ps / docker ps -a
+docker attach myubuntu
+docker logs -f myubuntu
+docker stats
+docker inspect myubuntu |grep -i image
+
+# commands to container management
+
+docker run hello-world
+docker run -d hello-world   // run in docker daemon, can't see the output in the terminal. Can use "docker logs -f <container>" to see the output.
+docker run --rm hello-world   // will delete the container after it has been executed. Can't find it using "docker ps -a".
+
+docker run --name myubuntu --cpuset-cpus 0-3 -it ubuntu:latest
+cat /sys/fs/cgroup/cpuset.cpus      // The cpuset.cpus is taking effect however is not being reflected in /proc/cpuinfo 
+
+docker run --name myubuntu --memory 2g -it ubuntu:latest
+docker inspect myubuntu |grep -i memory
+
+docker run --name myubuntu -v /home/hikari:/home/hikari -it ubuntu:latest
+ls /home/hikari
+exit       // will notice the container is exited using "docker ps -a"
+
+docker rm myubuntu
+docker container prune
+
+docker run --name myubuntu -it ubuntu:latest        // "-it" is important, otherwise the container is still exited after being restarted.
+docker restart myubuntu                             // will notice the container is up using "docker ps -a"
+docker exec -it myubuntu /bin/bash / docker attach myubuntu         // The container is still up even though exiting with these two commands
+docker kill myubuntu
+docker rm myubuntu
+
